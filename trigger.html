@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Advisory Onboarding</title>
+  </head>
+  <body>
+    %%[
+/* Variable Declaration */
+VAR  @subkey, @name, @email, @contact, @gender, @ts, @tsd, @ts_sub, @ts_statusCode, @ts_statusMsg, @errorCode
+
+/* Retrieve Parameters passed via HTTP Post Method */
+
+SET @name = RequestParameter("name")
+SET @email = RequestParameter("email")
+SET @contact=RequestParameter("contact")
+SET @gender=RequestParameter("gender")
+
+  
+  /* Create and Initialise Object */
+  SET @ts = CreateObject("TriggeredSend")  
+  SET @tsd = CreateObject("TriggeredSendDefinition")  
+  SetObjectProperty(@tsd,"CustomerKey","24461")  
+  SetObjectProperty(@ts, "TriggeredSendDefinition", @tsd)
+  
+  /* Create and Initialise Object */
+  SET @ts_sub = CreateObject("Subscriber")
+  SetObjectProperty(@ts_sub,"EmailAddress",@email)
+  SetObjectProperty(@ts_sub,"SubscriberKey",@email)
+  
+  SET @ts_UFN = CreateObject("Attribute")
+  SetObjectProperty(@ts_UFN, "Name", "Name")
+  SetObjectProperty(@ts_UFN, "Value", @name)
+  AddObjectArrayItem(@ts_sub, "Attributes", @ts_UFN)
+  
+  SET @ts_UCou = CreateObject("Attribute")
+  SetObjectProperty(@ts_UCou, "Name", "Email")
+  SetObjectProperty(@ts_UCou, "Value", @email)
+  AddObjectArrayItem(@ts_sub, "Attributes", @ts_UCou)
+  
+  SET @ts_UCom = CreateObject("Attribute")
+  SetObjectProperty(@ts_UCom, "Name", "Contact")
+  SetObjectProperty(@ts_UCom, "Value", @contact)
+  AddObjectArrayItem(@ts_sub, "Attributes", @ts_UCom)
+  
+   SET @ts_UG = CreateObject("Attribute")
+  SetObjectProperty(@ts_UG, "Name", "Gender")
+  SetObjectProperty(@ts_UG, "Value", @gender)
+  AddObjectArrayItem(@ts_sub, "Attributes", @ts_UG)
+  
+  
+  AddObjectArrayItem(@ts, "Subscribers", @ts_sub)
+  SET @ts_statusCode = InvokeCreate(@ts, @ts_statusMsg, @errorCode)
+
+  ]%%
+      <center>
+        <h1>Thank You for Registration.</h1><br>
+          <h4> You will receive a mail with further details shortly.</h4>
+      </center>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
